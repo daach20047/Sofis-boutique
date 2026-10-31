@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8508a"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><title>De Sofi’s Boutique · Control</title>
+<style>
+:root{--bg:#fff7fa;--cd:#fff;--tx:#3a2a31;--mu:#8a7480;--pk:#e8508a;--gd:#b8892b;--bd:#f3d3e0;--ok:#1f9d63;--bad:#d93f4f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1519;--cd:#2a1f25;--tx:#f6e9ee;--mu:#b9a2ad;--pk:#ff7fae;--gd:#e0b256;--bd:#4a3640;--ok:#4cd694;--bad:#ff7a87;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1519;--cd:#2a1f25;--tx:#f6e9ee;--mu:#b9a2ad;--pk:#ff7fae;--gd:#e0b256;--bd:#4a3640;--ok:#4cd694;--bad:#ff7a87;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:14px 16px 6px;display:flex;align-items:center;gap:10px}header h1{margin:0;font-size:19px;color:var(--pk)}header small{color:var(--gd);display:block;font-size:12px}
+nav{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:none;border:1px solid var(--bd);background:var(--cd);color:var(--tx);padding:8px 14px;border-radius:20px;font:inherit;cursor:pointer}
+nav button.on{background:var(--pk);color:#fff;border-color:var(--pk)}
+main{padding:8px 12px 40px;max-width:1000px;margin:auto}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k,.cd{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.k b{display:block;font-size:19px;margin-top:2px}.k span{color:var(--mu);font-size:12px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.mu{color:var(--mu)}
+h2{font-size:16px;margin:14px 0 8px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:9px;width:100%}
+.bar input,.bar select{width:auto;flex:1;min-width:120px}
+.btn{border:0;background:var(--pk);color:#fff;padding:9px 14px;border-radius:10px;font:inherit;cursor:pointer;white-space:nowrap}
+.btn.s{background:var(--cd);color:var(--tx);border:1px solid var(--bd)}.btn.x{background:var(--bad)}.btn.t{padding:5px 9px;font-size:13px}
+.w{overflow-x:auto;background:var(--cd);border:1px solid var(--bd);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:640px}th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{font-size:12px;color:var(--mu);font-weight:600}td.r,th.r{text-align:right}tr:last-child td{border-bottom:0}
+.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--bd);gap:8px}.row:last-child{border:0}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f label{font-size:12px;color:var(--mu);display:block}.f .full{grid-column:1/-1}
+dialog{border:1px solid var(--bd);border-radius:16px;background:var(--cd);color:var(--tx);width:min(460px,94vw);padding:16px}dialog::backdrop{background:#0006}
+.pv{background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:8px;font-size:14px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none;z-index:99}
+#toast.on{opacity:1}
+.tag{display:inline-block;background:var(--bd);border-radius:8px;padding:1px 8px;font-size:12px}
+</style></head><body>
+<header><div style="font-size:30px">🐝</div><div><h1>De Sofi’s Boutique</h1><small>Inventario · Ventas · Ganancias</small></div></header>
+<nav id="nav"></nav><main id="v"></main><dialog id="dlg"></dialog><div id="toast"></div>
+<script>
+const K='sofis_v1';let S={p:[],m:[]};
+try{const r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}
+S.c=S.c||[];
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const C=n=>'C$ '+(+n||0).toLocaleString('es-NI',{minimumFractionDigits:2,maximumFractionDigits:2});
+const day=(o=0)=>{const d=new Date(Date.now()-o*864e5);return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const num=id=>parseFloat($('#'+id).value)||0;
+let tab='res',q='',cq='',SC={n:'',p:''},per='mes',F={t:'',a:'',b:''};
+const tabs=[['res','📊 Resumen'],['inv','📦 Inventario'],['ven','🛒 Vender'],['cli','👥 Clientes'],['rep','🧾 Reportes']];
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2000)}
+function go(t){tab=t;draw()}
+function from(){return per=='hoy'?day():per=='sem'?day(6):per=='mes'?day().slice(0,7)+'-01':''}
+function log(t,p,qty,cost,price,note){S.m.push({id:uid(),d:day(),t,pid:p.id,n:p.name,c:p.cat,q:qty,cost,price,tot:qty*(t=='venta'?price:cost),g:t=='venta'?(price-cost)*qty:0,note:note||''})}
+function draw(){
+ $('#nav').innerHTML=tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
+ $('#v').innerHTML=({res:vRes,inv:vInv,ven:vVen,cli:vCli,rep:vRep})[tab]();
+}
+function vRes(){
+ const f=from(),ms=S.m.filter(m=>m.t=='venta'&&m.d>=f);
+ const vt=ms.reduce((a,m)=>a+m.tot,0),gn=ms.reduce((a,m)=>a+m.g,0);
+ const inv=S.p.reduce((a,p)=>a+p.stock*p.cost,0),pot=S.p.reduce((a,p)=>a+p.stock*p.price,0);
+ const low=S.p.filter(p=>p.stock<=3);
+ const agg=(key)=>{const o={};ms.forEach(m=>{const k=m[key];o[k]=o[k]||{n:k,q:0,t:0,g:0};o[k].q+=m.q;o[k].t+=m.tot;o[k].g+=m.g});return Object.values(o).sort((a,b)=>b.q-a.q)};
+ const rows=(a)=>a.length?a.slice(0,8).map(x=>`<div class="row"><span>${esc(x.n)}</span><span><b>${x.q}</b> uds · ${C(x.t)} · <span class="ok">${C(x.g)}</span></span></div>`).join(''):'<p class="mu">Sin ventas en este período.</p>';
+ return `<div class="bar"><select onchange="per=this.value;draw()">${[['hoy','Hoy'],['sem','Últimos 7 días'],['mes','Este mes'],['todo','Todo']].map(([k,l])=>`<option value="${k}" ${per==k?'selected':''}>${l}</option>`).join('')}</select></div>
+ <div class="g"><div class="k"><span>Ventas</span><b>${C(vt)}</b></div><div class="k"><span>Ganancia</span><b class="ok">${C(gn)}</b></div><div class="k"><span>Margen</span><b>${vt?(gn/vt*100).toFixed(1):0}%</b></div><div class="k"><span>Inventario (a costo)</span><b>${C(inv)}</b></div><div class="k"><span>Inventario (a precio venta)</span><b>${C(pot)}</b></div><div class="k"><span>Productos / Stock bajo</span><b>${S.p.length} / <span class="${low.length?'bad':''}">${low.length}</span></b></div></div>
+ <h2>🏆 Productos más vendidos</h2><div class="cd">${rows(agg('n'))}</div>
+ <h2>🗂️ Categorías más vendidas</h2><div class="cd">${rows(agg('c'))}</div>
+ ${low.length?`<h2>⚠️ Stock bajo (3 o menos)</h2><div class="cd">${low.map(p=>`<div class="row"><span>${esc(p.name)}</span><b class="bad">${p.stock}</b></div>`).join('')}</div>`:''}`;
+}
+function vInv(){
+ const l=S.p.filter(p=>(p.name+p.cat).toLowerCase().includes(q.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name));
+ return `<div class="bar"><input placeholder="Buscar producto o categoría…" value="${esc(q)}" oninput="q=this.value;draw();const i=document.querySelector('.bar input');i.focus();i.setSelectionRange(q.length,q.length)"><button class="btn" onclick="openProd()">+ Nuevo producto</button></div>
+ <div class="w"><table><tr><th>Producto</th><th>Categoría</th><th class="r">Compra</th><th class="r">Venta</th><th class="r">Ganancia</th><th class="r">%</th><th class="r">Stock</th><th></th></tr>
+ ${l.map(p=>{const g=p.price-p.cost;return `<tr><td>${esc(p.name)}</td><td><span class="tag">${esc(p.cat)}</span></td><td class="r">${C(p.cost)}</td><td class="r">${C(p.price)}</td><td class="r ${g>=0?'ok':'bad'}">${C(g)}</td><td class="r">${p.cost?(g/p.cost*100).toFixed(0):'–'}%</td><td class="r ${p.stock<=3?'bad':''}"><b>${p.stock}</b></td><td><button class="btn t" onclick="openStock('${p.id}')">+Stock</button> <button class="btn t s" onclick="openProd('${p.id}')">Editar</button> <button class="btn t s" onclick="askDel('${p.id}')">🗑</button></td></tr>`}).join('')||'<tr><td colspan="8" class="mu">Aún no hay productos. Toca “+ Nuevo producto”.</td></tr>'}
+ </table></div>`;
+}
+let selP='';
+function vVen(){
+ const av=S.p.filter(p=>p.stock>0);if(!av.find(p=>p.id==selP))selP=av[0]?av[0].id:'';
+ const p=S.p.find(x=>x.id==selP);
+ if(!av.length)return '<div class="cd mu">No hay productos con stock. Agrega inventario primero.</div>';
+ return `<div class="cd"><h2 style="margin-top:0">Registrar venta</h2><div class="f">
+ <div class="full"><label>Producto</label><select id="sp" onchange="selP=this.value;draw()">${av.map(x=>`<option value="${x.id}" ${x.id==selP?'selected':''}>${esc(x.name)} (stock ${x.stock})</option>`).join('')}</select></div>
+ <div><label>Cantidad</label><input id="sq" type="number" min="1" value="1" oninput="pvS()"></div>
+ <div><label>Precio unitario</label><input id="sc" type="number" step="0.01" value="${p.price}" oninput="pvS()"></div>
+ <div><label>Cliente</label><input id="scn" list="cll" value="${esc(SC.n)}" oninput="SC.n=this.value;fillPh()"><datalist id="cll">${S.c.map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist></div><div><label>Celular</label><input id="sph" type="tel" value="${esc(SC.p)}" oninput="SC.p=this.value"></div><div class="full"><label>Nota (opcional)</label><input id="sn"></div></div>
+ <div class="pv" id="spv"></div><p><button class="btn" onclick="sell()">Registrar venta</button></p></div>`;
+}
+function pvS(){const p=S.p.find(x=>x.id==selP);if(!p)return;const q=num('sq'),pr=num('sc');$('#spv').innerHTML=`Total: <b>${C(q*pr)}</b> · Ganancia: <b class="${pr>=p.cost?'ok':'bad'}">${C((pr-p.cost)*q)}</b>`}
+function sell(){const p=S.p.find(x=>x.id==selP),q=Math.floor(num('sq')),pr=num('sc');
+ if(!p||q<1)return toast('Cantidad inválida');if(q>p.stock)return toast('Solo hay '+p.stock+' en stock');
+ p.stock-=q;let cid='';const cnm=$('#scn').value.trim(),ph=$('#sph').value.trim();
+ if(cnm){let c=S.c.find(x=>x.name.toLowerCase()==cnm.toLowerCase());if(!c){c={id:uid(),name:cnm,phone:ph};S.c.push(c)}else if(ph&&!c.phone)c.phone=ph;cid=c.id}
+ log('venta',p,q,p.cost,pr,$('#sn').value);S.m[S.m.length-1].cid=cid;SC={n:'',p:''};save();toast('Venta registrada ✔');draw()}
+function vRep(){
+ const l=S.m.filter(m=>(!F.t||m.t==F.t)&&(!F.a||m.d>=F.a)&&(!F.b||m.d<=F.b)).slice().reverse();
+ const v=l.filter(m=>m.t=='venta'),cmp=l.filter(m=>m.t=='compra');
+ return `<div class="bar"><select onchange="F.t=this.value;draw()"><option value="">Todos los movimientos</option>${['venta','compra','ajuste'].map(t=>`<option ${F.t==t?'selected':''} value="${t}">${t[0].toUpperCase()+t.slice(1)}s</option>`).join('')}</select>
+ <input type="date" value="${F.a}" onchange="F.a=this.value;draw()"><input type="date" value="${F.b}" onchange="F.b=this.value;draw()"></div>
+ <div class="g"><div class="k"><span>Vendido</span><b>${C(v.reduce((a,m)=>a+m.tot,0))}</b></div><div class="k"><span>Ganancia</span><b class="ok">${C(v.reduce((a,m)=>a+m.g,0))}</b></div><div class="k"><span>Comprado</span><b>${C(cmp.reduce((a,m)=>a+m.tot,0))}</b></div></div>
+ <div class="bar"><button class="btn s" onclick="expCSV()">Exportar CSV</button><button class="btn s" onclick="expJSON()">Respaldo</button><button class="btn s" onclick="impJSON()">Restaurar</button></div>
+ <div class="w"><table><tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cliente</th><th>Categoría</th><th class="r">Cant.</th><th class="r">Precio</th><th class="r">Total</th><th class="r">Ganancia</th><th>Nota</th></tr>
+ ${l.map(m=>`<tr><td>${m.d}</td><td><span class="tag">${m.t}</span></td><td>${esc(m.n)}</td><td>${esc(cn(m))}</td><td>${esc(m.c)}</td><td class="r">${m.q}</td><td class="r">${C(m.t=='venta'?m.price:m.cost)}</td><td class="r">${C(m.tot)}</td><td class="r ${m.g>=0?'ok':'bad'}">${m.t=='venta'?C(m.g):'–'}</td><td>${esc(m.note)}</td></tr>`).join('')||'<tr><td colspan="10" class="mu">Sin movimientos.</td></tr>'}
+ </table></div>`;
+}
+const cn=m=>(S.c.find(c=>c.id==m.cid)||{}).name||'',cph=m=>(S.c.find(c=>c.id==m.cid)||{}).phone||'';
+function fillPh(){const c=S.c.find(x=>x.name.toLowerCase()==SC.n.trim().toLowerCase());if(c&&c.phone&&!SC.p){SC.p=c.phone;$('#sph').value=c.phone}}
+function vCli(){
+ const r=S.c.map(c=>{const ms=S.m.filter(m=>m.t=='venta'&&m.cid==c.id),o={};ms.forEach(m=>o[m.n]=(o[m.n]||0)+m.q);return{c,n:ms.length,tot:ms.reduce((a,m)=>a+m.tot,0),last:ms.length?ms[ms.length-1].d:'–',pr:Object.entries(o).map(([k,v])=>esc(k)+' ×'+v).join(', ')}}).filter(x=>(x.c.name+x.c.phone).toLowerCase().includes(cq.toLowerCase())).sort((a,b)=>b.tot-a.tot);
+ return `<div class="bar"><input placeholder="Buscar cliente o celular…" value="${esc(cq)}" oninput="cq=this.value;draw();const i=document.querySelector('.bar input');i.focus();i.setSelectionRange(cq.length,cq.length)"><button class="btn" onclick="openCli()">+ Nuevo cliente</button></div>
+ <div class="w"><table><tr><th>Cliente</th><th>Celular</th><th>Productos que compró</th><th class="r">Compras</th><th class="r">Total pagado</th><th>Última</th><th></th></tr>
+ ${r.map(x=>{const d=(x.c.phone||'').replace(/\D/g,''),w=d.length==8?'505'+d:d;return `<tr><td><b>${esc(x.c.name)}</b></td><td>${esc(x.c.phone)}</td><td style="white-space:normal;min-width:180px">${x.pr||'<span class="mu">–</span>'}</td><td class="r">${x.n}</td><td class="r ok"><b>${C(x.tot)}</b></td><td>${x.last}</td><td>${w?`<a class="btn t s" style="text-decoration:none" target="_blank" href="https://wa.me/${w}">WhatsApp</a> `:''}<button class="btn t s" onclick="openCli('${x.c.id}')">Editar</button></td></tr>`}).join('')||'<tr><td colspan="7" class="mu">Aún no hay clientes. Se crean solos al registrar una venta con nombre, o con “+ Nuevo cliente”.</td></tr>'}
+ </table></div>`}
+function openCli(id){const c=S.c.find(x=>x.id==id)||{name:'',phone:''};
+ D.innerHTML=`<h2 style="margin-top:0">${id?'Editar':'Nuevo'} cliente</h2><div class="f"><div class="full"><label>Nombre</label><input id="cn1" value="${esc(c.name)}"></div><div class="full"><label>Celular</label><input id="cp1" type="tel" value="${esc(c.phone)}"></div></div><p style="display:flex;gap:8px;justify-content:flex-end"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn" onclick="saveCli('${id||''}')">Guardar</button></p>`;D.showModal()}
+function saveCli(id){const n=$('#cn1').value.trim();if(!n)return toast('Falta el nombre');const p=$('#cp1').value.trim();
+ if(id){const c=S.c.find(x=>x.id==id);c.name=n;c.phone=p}else S.c.push({id:uid(),name:n,phone:p});save();D.close();toast('Guardado ✔');draw()}
+const D=$('#dlg');
+function openProd(id){const p=S.p.find(x=>x.id==id)||{name:'',cat:'',cost:'',price:'',stock:''};
+ const cats=[...new Set(S.p.map(x=>x.cat))];
+ D.innerHTML=`<h2 style="margin-top:0">${id?'Editar':'Nuevo'} producto</h2><div class="f">
+ <div class="full"><label>Nombre</label><input id="pn" value="${esc(p.name)}"></div>
+ <div class="full"><label>Categoría</label><input id="pc" list="cl" value="${esc(p.cat)}" placeholder="Ej: Pañales, Ropa, Higiene"><datalist id="cl">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
+ <div><label>Valor de compra</label><input id="pk" type="number" step="0.01" value="${p.cost}" oninput="pvP()"></div>
+ <div><label>Precio de venta</label><input id="pp" type="number" step="0.01" value="${p.price}" oninput="pvP()"></div>
+ <div class="full"><label>Cantidad en stock</label><input id="ps" type="number" min="0" value="${p.stock}"></div></div>
+ <div class="pv" id="ppv"></div><p style="display:flex;gap:8px;justify-content:flex-end"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn" onclick="saveProd('${id||''}')">Guardar</button></p>`;
+ D.showModal();pvP()}
+function pvP(){const k=num('pk'),p=num('pp'),g=p-k;$('#ppv').innerHTML=`Ganancia por unidad: <b class="${g>=0?'ok':'bad'}">${C(g)}</b> · <b>${k?(g/k*100).toFixed(1):0}%</b> sobre costo`}
+function saveProd(id){const n=$('#pn').value.trim(),c=$('#pc').value.trim()||'General';if(!n)return toast('Falta el nombre');
+ const d={name:n,cat:c,cost:num('pk'),price:num('pp')},st=Math.max(0,Math.floor(num('ps')));
+ if(id){const p=S.p.find(x=>x.id==id);if(st!=p.stock)log('ajuste',p,st-p.stock,d.cost,d.price,'Ajuste manual');Object.assign(p,d,{stock:st})}
+ else{const p={id:uid(),...d,stock:st};S.p.push(p);if(st>0)log('compra',p,st,d.cost,d.price,'Inventario inicial')}
+ save();D.close();toast('Guardado ✔');draw()}
+function openStock(id){const p=S.p.find(x=>x.id==id);
+ D.innerHTML=`<h2 style="margin-top:0">Ingresar inventario</h2><p class="mu">${esc(p.name)} · stock actual ${p.stock}</p><div class="f">
+ <div><label>Cantidad que entra</label><input id="rq" type="number" min="1" value="1"></div>
+ <div><label>Valor de compra</label><input id="rk" type="number" step="0.01" value="${p.cost}" oninput="pvR(${p.price})"></div>
+ <div class="full"><label>Precio de venta</label><input id="rp" type="number" step="0.01" value="${p.price}" oninput="pvR()"></div></div>
+ <div class="pv" id="rpv"></div><p style="display:flex;gap:8px;justify-content:flex-end"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn" onclick="saveStock('${id}')">Agregar</button></p>`;
+ D.showModal();pvR()}
+function pvR(){const k=num('rk'),p=num('rp'),g=p-k;$('#rpv').innerHTML=`Ganancia por unidad: <b class="${g>=0?'ok':'bad'}">${C(g)}</b> · <b>${k?(g/k*100).toFixed(1):0}%</b>`}
+function saveStock(id){const p=S.p.find(x=>x.id==id),q=Math.floor(num('rq'));if(q<1)return toast('Cantidad inválida');
+ p.cost=num('rk');p.price=num('rp');p.stock+=q;log('compra',p,q,p.cost,p.price,'Reposición');save();D.close();toast('Inventario actualizado ✔');draw()}
+function askDel(id){const p=S.p.find(x=>x.id==id);
+ D.innerHTML=`<h2 style="margin-top:0">¿Eliminar producto?</h2><p>${esc(p.name)} se quitará del inventario. Sus movimientos pasados se conservan en reportes.</p><p style="display:flex;gap:8px;justify-content:flex-end"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn x" onclick="S.p=S.p.filter(x=>x.id!='${id}');save();D.close();draw()">Eliminar</button></p>`;D.showModal()}
+function txt(title,body,fn,mime,extra){
+ D.innerHTML=`<h2 style="margin-top:0">${title}</h2><textarea id="tx" rows="9" ${extra?'':'readonly'}>${esc(body)}</textarea><p style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button class="btn s" onclick="D.close()">Cerrar</button>${extra?`<button class="btn" onclick="doImp()">Restaurar datos</button>`:`<button class="btn s" onclick="$('#tx').select();document.execCommand('copy');toast('Copiado')">Copiar</button><button class="btn" onclick="dl('${fn}','${mime}')">Descargar</button>`}</p>`;D.showModal()}
+function dl(fn,mime){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('#tx').value],{type:mime}));a.download=fn;a.click()}catch(e){toast('Usa Copiar y pega en un archivo')}}
+function expJSON(){txt('Respaldo de datos',JSON.stringify(S),'respaldo-sofis-'+day()+'.json','application/json')}
+function impJSON(){txt('Restaurar respaldo','',null,null,true);$('#tx').placeholder='Pega aquí el respaldo…'}
+function doImp(){try{const o=JSON.parse($('#tx').value);if(!Array.isArray(o.p)||!Array.isArray(o.m))throw 0;S=o;S.c=S.c||[];save();D.close();toast('Datos restaurados ✔');draw()}catch(e){toast('Respaldo no válido')}}
+function expCSV(){const l=S.m.filter(m=>(!F.t||m.t==F.t)&&(!F.a||m.d>=F.a)&&(!F.b||m.d<=F.b));
+ const r=[['Fecha','Tipo','Producto','Cliente','Celular','Categoria','Cantidad','Costo','Precio','Total','Ganancia','Nota'],...l.map(m=>[m.d,m.t,m.n,cn(m),cph(m),m.c,m.q,m.cost,m.price,m.tot,m.g,m.note])];
+ txt('Reporte CSV',r.map(x=>x.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'),'movimientos-sofis-'+day()+'.csv','text/csv')}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+draw();
+</script></body></html>
