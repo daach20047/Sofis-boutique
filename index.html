@@ -44,14 +44,15 @@ dialog{border:1px solid var(--bd);border-radius:16px;background:var(--cd);color:
 .b1{fill:var(--pk)}.b2{fill:var(--ok)}.lb{fill:var(--mu);font-size:10px}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pk);outline-offset:2px}
 .lg{display:flex;gap:14px;font-size:12px;color:var(--mu);margin-bottom:6px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+#lg{position:fixed;inset:0;background:var(--bg);z-index:100;display:grid;place-items:center;padding:20px}#lg[hidden]{display:none}#lg .cd{width:min(380px,100%)}
 </style></head><body>
-<header><div style="font-size:30px">🐝</div><div><h1>De Sofi’s Boutique</h1><small>Inventario · Ventas · Costos · Ganancias</small></div></header>
-<nav id="nav"></nav><main id="v"></main><dialog id="dlg"></dialog><div id="toast"></div>
+<header><div style="font-size:30px">🐝</div><div><h1>De Sofi’s Boutique</h1><small>Inventario · Ventas · Costos · Ganancias</small></div><div style="margin-left:auto;text-align:right"><small id="st" style="color:var(--mu)"></small><br><button class="btn t s" onclick="logout()">Salir</button></div></header>
+<nav id="nav"></nav><main id="v"></main><dialog id="dlg"></dialog><div id="lg" hidden><form class="cd" onsubmit="return login(event)"><div style="font-size:34px;text-align:center">🐝</div><h2 style="text-align:center;color:var(--pk)">De Sofi’s Boutique</h2><div class="f"><div class="full"><label>Correo</label><input id="lem" type="email" autocomplete="username" required></div><div class="full"><label>Contraseña</label><input id="lpw" type="password" autocomplete="current-password" required></div></div><p id="le" class="bad" style="min-height:20px;font-size:13px"></p><button id="lb" class="btn" style="width:100%;padding:12px">Entrar</button></form></div><div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const K='sofis_v1';let S={p:[],m:[]};
-try{const r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}
+const K='sofis_v1',K2='sofis_cloud';let S={p:[],m:[]},L0=null;try{const r=localStorage.getItem(K);if(r)L0=JSON.parse(r);const r2=localStorage.getItem(K2);if(r2)S=JSON.parse(r2)}catch(e){}
 S.c=S.c||[];S.x=S.x||[];
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(K2,JSON.stringify(S))}catch(e){}push()};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const C=n=>'C$ '+(+n||0).toLocaleString('es-NI',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -64,8 +65,8 @@ function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');setT
 function go(t){tab=t;draw()}
 function from(){return per=='hoy'?day():per=='sem'?day(6):per=='mes'?day().slice(0,7)+'-01':''}
 function log(t,p,qty,cost,price,note){S.m.push({id:uid(),d:day(),t,pid:p.id,n:p.name,c:p.cat,q:qty,cost,price,tot:qty*(t=='venta'?price:cost),g:t=='venta'?(price-cost)*qty:0,note:note||''})}
-function draw(){
- $('#nav').innerHTML=tabs.map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
+function draw(){if(tab=='rep'&&!OWN)tab='res';
+ $('#nav').innerHTML=tabs.filter(t=>OWN||t[0]!='rep').map(([k,l])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
  $('#v').innerHTML=({res:vRes,inv:vInv,ven:vVen,cli:vCli,rep:vRep,cos:vCos})[tab]();if(tab=='ven')pvS();
 }
 function vRes(){
@@ -163,7 +164,7 @@ function txt(title,body,fn,mime,extra){
 function dl(fn,mime){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('#tx').value],{type:mime}));a.download=fn;a.click()}catch(e){toast('Usa Copiar y pega en un archivo')}}
 function expJSON(){txt('Respaldo de datos',JSON.stringify(S),'respaldo-sofis-'+day()+'.json','application/json')}
 function impJSON(){txt('Restaurar respaldo','',null,null,true);$('#tx').placeholder='Pega aquí el respaldo…'}
-function doImp(){try{const o=JSON.parse($('#tx').value);if(!Array.isArray(o.p)||!Array.isArray(o.m))throw 0;S=o;S.c=S.c||[];S.x=S.x||[];save();D.close();toast('Datos restaurados ✔');draw()}catch(e){toast('Respaldo no válido')}}
+function doImp(){if(!confirm('Esto reemplaza todos los datos de la nube con el respaldo. ¿Continuar?'))return;try{const o=JSON.parse($('#tx').value);if(!Array.isArray(o.p)||!Array.isArray(o.m))throw 0;S=o;S.c=S.c||[];S.x=S.x||[];save();D.close();toast('Datos restaurados ✔');draw()}catch(e){toast('Respaldo no válido')}}
 function expCSV(){const l=S.m.filter(m=>(!F.t||m.t==F.t)&&(!F.a||m.d>=F.a)&&(!F.b||m.d<=F.b));
  const r=[['Fecha','Tipo','Producto','Cliente','Celular','Categoria','Cantidad','Costo','Precio','Total','Ganancia','Nota'],...l.map(m=>[m.d,m.t,m.n,cn(m),cph(m),m.c,m.q,m.cost,m.price,m.tot,m.g,m.note])];
  txt('Reporte CSV',r.map(x=>x.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'),'movimientos-sofis-'+day()+'.csv','text/csv')}
@@ -217,6 +218,47 @@ function vDash(){
  <h2>Dónde se va el dinero</h2><div class="cd">${ce.map(([k,a])=>`<div class="row"><span>${esc(k)}</span><b>${C(a)}</b></div><div class="pb"><i style="width:${a/cm*100}%"></i></div>`).join('')||'<p class="mu">Sin costos en este período. Regístralos en la pestaña Costos.</p>'}</div>
  <h2>Productos con más ventas</h2><div class="cd">${top.map(([k,o])=>`<div class="row"><span>${esc(k)}</span><span><b>${o.q}</b> uds · ${C(o.t)} · <span class="ok">${C(o.g)}</span></span></div>`).join('')||'<p class="mu">Sin ventas en este período.</p>'}</div>
  <h2>Últimos movimientos</h2><div class="cd">${fd.map(o=>`<div class="row"><span>${o.d.slice(5)} · ${esc(o.t)}</span><b class="${o.a>0?'ok':'bad'}">${o.a>0?'+':'−'}${C(Math.abs(o.a))}</b></div>`).join('')||'<p class="mu">Aún no hay movimientos.</p>'}</div>`}
+
+/* ---- NUBE (Firebase) ---- */
+const FB={apiKey:"AIzaSyCpimz_TW1t2BzNnMZOugHEnkGUf5UixSM",authDomain:"sofis-boutique-f1776.firebaseapp.com",projectId:"sofis-boutique-f1776",storageBucket:"sofis-boutique-f1776.firebasestorage.app",messagingSenderId:"1084618169373",appId:"1:1084618169373:web:3d651d1bfcc9c50c3a7af4"};
+const CN={p:'products',m:'movs',c:'clients',x:'costs'};
+let DB=null,U=null,OWN=false,SH={p:{},m:{},c:{},x:{}},un=[],rdy={},migAsked=false;
+const sj=o=>JSON.stringify(o,Object.keys(o).sort());
+const st=t=>{const e=$('#st');if(e)e.textContent=t};
+function rd(){if(D.open)return;const a=document.activeElement;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&$('#v').contains(a))return;draw()}
+function boot(){
+ if(typeof firebase=='undefined'){$('#lg').hidden=false;$('#le').textContent='Sin conexión. Abre la app con internet al menos una vez.';return}
+ firebase.initializeApp(FB);DB=firebase.firestore();DB.enablePersistence({synchronizeTabs:true}).catch(()=>{});
+ firebase.auth().onAuthStateChanged(u=>{U=u;if(!u){stopSync();$('#lg').hidden=false;return}$('#lg').hidden=true;startSync()});
+ addEventListener('offline',()=>st('⚠ sin conexión'));addEventListener('online',()=>st('☁ conectando…'));
+}
+async function login(e){e.preventDefault();const b=$('#lb');b.disabled=true;$('#le').textContent='';
+ try{await firebase.auth().signInWithEmailAndPassword($('#lem').value.trim(),$('#lpw').value)}
+ catch(x){$('#le').textContent=({'auth/invalid-credential':'Correo o contraseña incorrectos','auth/wrong-password':'Correo o contraseña incorrectos','auth/user-not-found':'Correo o contraseña incorrectos','auth/invalid-email':'El correo no es válido','auth/network-request-failed':'Sin conexión a internet','auth/too-many-requests':'Demasiados intentos. Espera unos minutos','auth/unauthorized-domain':'Falta autorizar este dominio en Firebase'})[x.code]||('No se pudo entrar ('+x.code+')')}
+ b.disabled=false;return false}
+function logout(){if(!confirm('¿Cerrar sesión?'))return;stopSync();try{localStorage.removeItem(K2)}catch(e){}S={p:[],m:[],c:[],x:[]};OWN=false;firebase.auth().signOut()}
+function stopSync(){un.forEach(f=>f());un=[];rdy={};migAsked=false}
+function startSync(){stopSync();
+ un.push(DB.doc('meta/owner').onSnapshot(s=>{if(!s.exists){if(!s.metadata.fromCache)DB.doc('meta/owner').set({uid:U.uid,email:U.email}).catch(()=>{});return}OWN=s.data().uid==U.uid;rd()}));
+ for(const k in CN)un.push(DB.collection(CN[k]).onSnapshot(sn=>{
+  S[k]=sn.docs.map(d=>({...d.data(),id:d.id}));SH[k]={};S[k].forEach(o=>SH[k][o.id]=JSON.parse(JSON.stringify(o)));
+  try{localStorage.setItem(K2,JSON.stringify(S))}catch(e){}
+  st(sn.metadata.hasPendingWrites?'⏳ enviando…':navigator.onLine?'☁ al día':'⚠ sin conexión');
+  if(!sn.metadata.fromCache)rdy[k]=1;rd();chkMig()},e=>toast('Sin permiso o sin conexión ('+(e.code||'error')+')')))}
+function push(){if(!DB||!U)return;const ops=[],F=firebase.firestore.FieldValue;
+ for(const k in CN){const cur={};S[k].forEach(o=>cur[o.id]=o);
+  for(const id in cur){const o=cur[id],s=SH[k][id],r=DB.collection(CN[k]).doc(id);
+   if(!s)ops.push(b=>b.set(r,o));
+   else if(sj(o)!=sj(s)){const d={...o};if(k=='p'&&o.stock!==s.stock)d.stock=F.increment(o.stock-s.stock);ops.push(b=>b.set(r,d,{merge:true}))}}
+  for(const id in SH[k])if(!cur[id]){const r=DB.collection(CN[k]).doc(id);ops.push(b=>b.delete(r))}
+  SH[k]={};for(const id in cur)SH[k][id]=JSON.parse(JSON.stringify(cur[id]))}
+ for(let i=0;i<ops.length;i+=400){const b=DB.batch();ops.slice(i,i+400).forEach(g=>g(b));b.commit().catch(e=>toast('No se pudo guardar ('+(e.code||'error')+')'))}
+ if(ops.length)st('⏳ enviando…')}
+function chkMig(){if(migAsked||!L0||localStorage.getItem('sofis_migrated'))return;if(!['p','m','c','x'].every(k=>rdy[k]))return;
+ if(['p','m','c','x'].some(k=>S[k].length))return;const n=a=>(a||[]).length;if(!n(L0.p)&&!n(L0.m)&&!n(L0.c)&&!n(L0.x))return;migAsked=true;
+ D.innerHTML=`<h2 style="margin-top:0">Datos encontrados en este dispositivo</h2><p>Hay ${n(L0.p)} productos, ${n(L0.m)} movimientos, ${n(L0.c)} clientes y ${n(L0.x)} costos guardados aquí. ¿Subirlos a la nube para compartirlos con los otros dispositivos?</p><p class="act"><button class="btn s" onclick="D.close()">Ahora no</button><button class="btn" onclick="doMig()">Subir a la nube</button></p>`;D.showModal()}
+function doMig(){S={p:L0.p||[],m:L0.m||[],c:L0.c||[],x:L0.x||[]};try{localStorage.setItem('sofis_migrated','1')}catch(e){}save();D.close();toast('Subiendo datos…');draw()}
+boot();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 draw();
 </script></body></html>
