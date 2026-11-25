@@ -45,9 +45,11 @@ dialog{border:1px solid var(--bd);border-radius:16px;background:var(--cd);color:
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pk);outline-offset:2px}
 .lg{display:flex;gap:14px;font-size:12px;color:var(--mu);margin-bottom:6px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
 #lg{position:fixed;inset:0;background:var(--bg);z-index:100;display:grid;place-items:center;padding:20px}#lg[hidden]{display:none}#lg .cd{width:min(380px,100%)}
+.chk{display:flex!important;gap:8px;align-items:center}.chk input{width:auto!important}
+.f textarea{width:100%;font:inherit;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--cd);color:var(--tx)}.f select{width:100%}
 </style></head><body>
-<header><div style="font-size:30px">🐝</div><div><h1>De Sofi’s Boutique</h1><small>Inventario · Ventas · Costos · Ganancias</small></div><div style="margin-left:auto;text-align:right"><small id="st" style="color:var(--mu)"></small><br><button class="btn t s" onclick="logout()">Salir</button></div></header>
-<nav id="nav"></nav><main id="v"></main><dialog id="dlg"></dialog><div id="lg" hidden><form class="cd" onsubmit="return login(event)"><div style="font-size:34px;text-align:center">🐝</div><h2 style="text-align:center;color:var(--pk)">De Sofi’s Boutique</h2><div class="f"><div class="full"><label>Correo</label><input id="lem" type="email" autocomplete="username" required></div><div class="full"><label>Contraseña</label><input id="lpw" type="password" autocomplete="current-password" required></div></div><p id="le" class="bad" style="min-height:20px;font-size:13px"></p><button id="lb" class="btn" style="width:100%;padding:12px">Entrar</button></form></div><div id="toast"></div>
+<header><img src="icon-192.png" alt="" width="44" height="44" style="border-radius:50%;flex:none"><div><h1>De Sofi’s Boutique</h1><small>Inventario · Ventas · Costos · Ganancias</small></div><div style="margin-left:auto;text-align:right"><small id="st" style="color:var(--mu)"></small><br><button class="btn t s" onclick="cfgOpen()">⚙ Tienda</button> <button class="btn t s" onclick="shareCat()">🔗 Catálogo</button> <button class="btn t s" onclick="logout()">Salir</button></div></header>
+<nav id="nav"></nav><main id="v"></main><dialog id="dlg"></dialog><div id="lg" hidden><form class="cd" onsubmit="return login(event)"><div style="text-align:center"><img src="icon-512.png" alt="De Sofi’s Boutique" width="130" height="130" style="border-radius:50%"></div><div class="f"><div class="full"><label>Correo</label><input id="lem" type="email" autocomplete="username" required></div><div class="full"><label>Contraseña</label><input id="lpw" type="password" autocomplete="current-password" required></div></div><p id="le" class="bad" style="min-height:20px;font-size:13px"></p><button id="lb" class="btn" style="width:100%;padding:12px">Entrar</button></form></div><div id="toast"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const K='sofis_v1',K2='sofis_cloud';let S={p:[],m:[]},L0=null;try{const r=localStorage.getItem(K);if(r)L0=JSON.parse(r);const r2=localStorage.getItem(K2);if(r2)S=JSON.parse(r2)}catch(e){}
@@ -131,19 +133,26 @@ function openCli(id){const c=S.c.find(x=>x.id==id)||{name:'',phone:''};
 function saveCli(id){const n=$('#cn1').value.trim();if(!n)return bad('cn1','Escribe el nombre del cliente');const p=$('#cp1').value.trim();
  if(id){const c=S.c.find(x=>x.id==id);c.name=n;c.phone=p}else S.c.push({id:uid(),name:n,phone:p});save();D.close();toast('Guardado ✔');draw()}
 const D=$('#dlg');
-function openProd(id){const p=S.p.find(x=>x.id==id)||{name:'',cat:'',cost:'',price:'',stock:''};
+function openProd(id){PIMG=null;const p=S.p.find(x=>x.id==id)||{name:'',cat:'',cost:'',price:'',stock:''};
  const cats=[...new Set(S.p.map(x=>x.cat))];
  D.innerHTML=`<h2 style="margin-top:0">${id?'Editar':'Nuevo'} producto</h2><div class="f">
  <div class="full"><label>Nombre</label><input id="pn" value="${esc(p.name)}"></div>
  <div class="full"><label>Categoría</label><input id="pc" list="cl" value="${esc(p.cat)}" placeholder="Ej: Pañales, Ropa, Higiene"><datalist id="cl">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
  <div><label>Valor de compra</label><input id="pk" type="number" step="0.01" value="${p.cost}" oninput="pvP()"></div>
  <div><label>Precio de venta</label><input id="pp" type="number" step="0.01" value="${p.price}" oninput="pvP()"></div>
- <div class="full"><label>Cantidad en stock</label><input id="ps" type="number" min="0" value="${p.stock}"></div></div>
+ <div class="full"><label>Cantidad en stock</label><input id="ps" type="number" min="0" value="${p.stock}"></div>
+ <div class="full"><label class="chk"><input type="checkbox" id="pb" ${p.pub?'checked':''} onchange="$('#pcat').hidden=!this.checked"> Mostrar en el catálogo</label></div></div>
+ <div id="pcat" class="f" style="margin-top:8px" ${p.pub?'':'hidden'}>
+ <div><label>Línea</label><select id="pl"><option value="bebes" ${(p.linea||'bebes')=='bebes'?'selected':''}>Bebés</option><option value="boutique" ${p.linea=='boutique'?'selected':''}>Boutique</option><option value="perfumes" ${p.linea=='perfumes'?'selected':''}>Perfumes</option></select></div>
+ <div><label>Código</label><input id="pcd" value="${esc(p.code||'')}" placeholder="SF001"></div>
+ <div><label>Género</label><select id="pg">${[['','—'],['nina','Niña'],['nino','Niño'],['dama','Dama'],['caballero','Caballero'],['unisex','Unisex']].map(([v,l])=>`<option value="${v}" ${(p.gen||'')==v?'selected':''}>${l}</option>`).join('')}</select></div>
+ <div><label>Condición</label><select id="pcn">${[['','—'],['nuevo','Nuevo'],['seminuevo','Seminuevo']].map(([v,l])=>`<option value="${v}" ${(p.cond||'')==v?'selected':''}>${l}</option>`).join('')}</select></div>
+ <div class="full"><label>Precio anterior (solo si está en oferta)</label><input id="po" type="number" step="0.01" min="0" value="${p.old||''}"></div><div class="full"><label>Descripción corta</label><input id="pd" value="${esc(p.desc||'')}" placeholder="Ej: Vestido de comunión con encaje"></div><div class="full"><label>Tallas, medidas o presentaciones (separadas por coma)</label><input id="pz" value="${esc(p.sizes||'')}" placeholder="Ej: 4, 6, 8 · o: 30 ml, 50 ml"></div><div class="full"><label>Foto</label><input id="pf" type="file" accept="image/*" onchange="pimg(this)"><img id="pim" alt="" src="${p.img||''}" style="max-width:120px;border-radius:12px;margin-top:6px;${p.img?'':'display:none'}"></div></div>
  <div class="pv" id="ppv"></div><p class="act"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn" onclick="saveProd('${id||''}')">Guardar</button></p>`;
  D.showModal();pvP()}
 function pvP(){const k=num('pk'),p=num('pp'),g=p-k;$('#ppv').innerHTML=`Ganancia por unidad: <b class="${g>=0?'ok':'bad'}">${C(g)}</b> · <b>${k?(g/k*100).toFixed(1):0}%</b> sobre costo`}
 function saveProd(id){const n=$('#pn').value.trim(),c=$('#pc').value.trim()||'General';if(!n)return bad('pn','Escribe el nombre del producto');
- const d={name:n,cat:c,cost:num('pk'),price:num('pp')},st=Math.max(0,Math.floor(num('ps')));
+ const d={name:n,cat:c,cost:num('pk'),price:num('pp'),pub:$('#pb').checked,linea:$('#pl').value,code:$('#pcd').value.trim(),gen:$('#pg').value,cond:$('#pcn').value,old:num('po'),pubAt:((S.p.find(x=>x.id==id)||{}).pubAt)||($('#pb').checked?Date.now():0),desc:$('#pd').value.trim(),sizes:$('#pz').value.trim(),img:PIMG||((S.p.find(x=>x.id==id)||{}).img)||''},st=Math.max(0,Math.floor(num('ps')));
  if(id){const p=S.p.find(x=>x.id==id);if(st!=p.stock)log('ajuste',p,st-p.stock,d.cost,d.price,'Ajuste manual');Object.assign(p,d,{stock:st})}
  else{const p={id:uid(),...d,stock:st};S.p.push(p);if(st>0)log('compra',p,st,d.cost,d.price,'Inventario inicial')}
  save();D.close();toast('Guardado ✔');draw()}
@@ -221,6 +230,16 @@ function vDash(){
 
 /* ---- NUBE (Firebase) ---- */
 const FB={apiKey:"AIzaSyCpimz_TW1t2BzNnMZOugHEnkGUf5UixSM",authDomain:"sofis-boutique-f1776.firebaseapp.com",projectId:"sofis-boutique-f1776",storageBucket:"sofis-boutique-f1776.firebasestorage.app",messagingSenderId:"1084618169373",appId:"1:1084618169373:web:3d651d1bfcc9c50c3a7af4"};
+let PIMG=null;const CS={};
+function pimg(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);PIMG=c.toDataURL('image/jpeg',.72);const e=$('#pim');e.src=PIMG;e.style.display='block'};im.src=r.result};r.readAsDataURL(f)}
+const CU=()=>new URL('catalogo.html',location.href).href;
+function shareCat(){const u=CU(),b='display:block;text-align:center;text-decoration:none';
+ D.innerHTML=`<h2 style="margin-top:0">Compartir catálogo</h2><p class="mu" style="margin:0 0 8px;font-size:13px">Este es el enlace que puedes enviar a tus clientes:</p><input id="cu" value="${esc(u)}" readonly onclick="this.select()"><div style="display:grid;gap:8px;margin-top:12px"><button class="btn" onclick="cpCat()">📋 Copiar enlace</button>${navigator.share?'<button class="btn" onclick="shCat()">📤 Compartir…</button>':''}<a class="btn" style="${b}" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Mira nuestro catálogo y arma tu pedido por WhatsApp: '+u)}">💬 Enviar por WhatsApp</a><a class="btn t" style="${b}" target="_blank" rel="noopener" href="${esc(u)}">👁 Ver catálogo</a></div><p class="act"><button class="btn s" onclick="D.close()">Cerrar</button></p>`;D.showModal()}
+async function cpCat(){try{await navigator.clipboard.writeText(CU())}catch(e){const i=$('#cu');i.select();try{document.execCommand('copy')}catch(x){}}toast('Enlace copiado ✔')}
+function shCat(){navigator.share({title:'Catálogo',text:'Mira nuestro catálogo y arma tu pedido por WhatsApp:',url:CU()}).catch(()=>{})}
+async function cfgOpen(){if(!OWN)return toast('Solo la cuenta dueña puede cambiar esto');let c={};try{const s=await DB.doc('config/store').get();if(s.exists)c=s.data()}catch(e){}
+ D.innerHTML=`<h2 style="margin-top:0">Configuración de la tienda</h2><div class="f"><div class="full"><label>Nombre de la tienda</label><input id="kn" value="${esc(c.nombre||'')}" placeholder="Sofy Store"></div><div class="full"><label>Eslogan</label><input id="ks" value="${esc(c.eslogan||'')}" placeholder="Todo lo que tu bebé necesita, en un solo lugar."></div><div class="full"><label>WhatsApp: uno por línea, “Nombre, número con código de país”</label><textarea id="kw" rows="3" placeholder="Sofi, 50512345678">${esc(c.wa||'')}</textarea></div><div class="full"><label>Horarios de atención</label><textarea id="kh" rows="2">${esc(c.horario||'')}</textarea></div><div class="full"><label>Entregas y retiros</label><textarea id="ke" rows="2">${esc(c.entregas||'')}</textarea></div></div><p class="act"><button class="btn s" onclick="D.close()">Cancelar</button><button class="btn" onclick="cfgSave()">Guardar</button></p>`;D.showModal()}
+function cfgSave(){const o={nombre:$('#kn').value.trim(),eslogan:$('#ks').value.trim(),wa:$('#kw').value.trim(),horario:$('#kh').value.trim(),entregas:$('#ke').value.trim()};DB.doc('config/store').set(o).then(()=>{D.close();toast('Configuración guardada ✔')}).catch(e=>toast('No se pudo guardar ('+(e.code||'error')+')'))}
 const CN={p:'products',m:'movs',c:'clients',x:'costs'};
 let DB=null,U=null,OWN=false,SH={p:{},m:{},c:{},x:{}},un=[],rdy={},migAsked=false;
 const sj=o=>JSON.stringify(o,Object.keys(o).sort());
@@ -245,13 +264,16 @@ function startSync(){stopSync();
   try{localStorage.setItem(K2,JSON.stringify(S))}catch(e){}
   st(sn.metadata.hasPendingWrites?'⏳ enviando…':navigator.onLine?'☁ al día':'⚠ sin conexión');
   if(!sn.metadata.fromCache)rdy[k]=1;rd();chkMig()},e=>toast('Sin permiso o sin conexión ('+(e.code||'error')+')')))}
-function push(){if(!DB||!U)return;const ops=[],F=firebase.firestore.FieldValue;
+function push(){if(!DB||!U)return;const ops=[],F=firebase.firestore.FieldValue,SP=SH.p;
  for(const k in CN){const cur={};S[k].forEach(o=>cur[o.id]=o);
   for(const id in cur){const o=cur[id],s=SH[k][id],r=DB.collection(CN[k]).doc(id);
    if(!s)ops.push(b=>b.set(r,o));
    else if(sj(o)!=sj(s)){const d={...o};if(k=='p'&&o.stock!==s.stock)d.stock=F.increment(o.stock-s.stock);ops.push(b=>b.set(r,d,{merge:true}))}}
   for(const id in SH[k])if(!cur[id]){const r=DB.collection(CN[k]).doc(id);ops.push(b=>b.delete(r))}
   SH[k]={};for(const id in cur)SH[k][id]=JSON.parse(JSON.stringify(cur[id]))}
+ const pubs={};S.p.filter(p=>p.pub).forEach(p=>pubs[p.id]=p);
+ for(const id in pubs){const p=pubs[id],d={name:p.name,cat:p.cat,price:p.price,desc:p.desc||'',sizes:p.sizes||'',img:p.img||'',av:p.stock>0,low:p.stock>0&&p.stock<=3,linea:p.linea||'bebes',code:p.code||'',gen:p.gen||'',cond:p.cond||'',old:p.old||0,ts:p.pubAt||0},j=sj(d);if(CS[id]!==j){CS[id]=j;const r=DB.collection('catalog').doc(id);ops.push(b=>b.set(r,d))}}
+ for(const id in SP)if(SP[id].pub&&!pubs[id]){delete CS[id];const r=DB.collection('catalog').doc(id);ops.push(b=>b.delete(r))}
  for(let i=0;i<ops.length;i+=400){const b=DB.batch();ops.slice(i,i+400).forEach(g=>g(b));b.commit().catch(e=>toast('No se pudo guardar ('+(e.code||'error')+')'))}
  if(ops.length)st('⏳ enviando…')}
 function chkMig(){if(migAsked||!L0||localStorage.getItem('sofis_migrated'))return;if(!['p','m','c','x'].every(k=>rdy[k]))return;

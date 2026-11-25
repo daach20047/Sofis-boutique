@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sofy Store · Catálogo</title>
+<meta name="description" content="Ropa y artículos para bebés, Boutique De Sofi’s y perfumes para dama y caballero. Arma tu lista y envíala por WhatsApp.">
+<meta property="og:title" content="Sofy Store · Catálogo"><meta property="og:description" content="Elige lo que te guste y envía tu pedido por WhatsApp."><meta property="og:image" content="https://daach20047.github.io/Sofis-boutique/icon-512.png"><meta name="theme-color" content="#ec6c9b"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#e0507f;--pink:#fde4ed;--blush:#fff6f0;--gold:#b8892b;--ink:#3a2a31;--mu:#7d6872;--bd:#f1d6c8;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body[data-l=boutique]{--rose:#a8327a;--pink:#f6e6d4;--blush:#fffaf3}
+body[data-l=perfumes]{--rose:#8c3f6a;--pink:#f1e4ec;--blush:#fbf7fa}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--blush);min-height:100vh}
+h1,h2,.pn{font-family:'Playfair Display',Georgia,serif}
+.hero{text-align:center;padding:22px 18px 4px}.logo{width:150px;height:150px;border-radius:50%;box-shadow:0 8px 24px #b8892b33}
+h1{margin:8px 0 0;font-size:28px;color:var(--rose)}.tag{margin:4px auto 0;max-width:440px;color:var(--mu);font-size:13px;line-height:1.5}
+.inf{max-width:440px;margin:10px auto 0;font-size:13px;color:var(--mu);text-align:left;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:8px 14px}.inf summary{cursor:pointer;font-weight:700;color:var(--ink)}.inf p{margin:6px 0;white-space:pre-line}.inf a{color:#1f9d63;font-weight:700}
+.dv{display:flex;align-items:center;gap:10px;max-width:420px;margin:12px auto 0}.dv:before,.dv:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.dv:after{transform:scaleX(-1)}
+.lines{display:flex;gap:8px;max-width:520px;margin:12px auto 0;padding:0 16px}.lines button{flex:1;border:1px solid var(--bd);background:#fff;color:var(--ink);padding:12px 6px;font-size:14px;border-radius:16px;font:inherit;font-weight:700;cursor:pointer}.lines button.on{background:var(--rose);border-color:var(--rose);color:#fff}
+.tools{max-width:1000px;margin:0 auto;padding:8px 16px}#q{width:100%;padding:12px 16px;border:1px solid var(--bd);border-radius:24px;font:inherit;background:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid var(--bd);background:#fff;color:var(--ink);padding:7px 15px;border-radius:20px;font:inherit;font-size:13px;cursor:pointer}.chips button.on{background:var(--rose);border-color:var(--rose);color:#fff}
+.flt{display:flex;gap:8px;flex-wrap:wrap;padding:6px 0}.flt select{flex:1;min-width:100px;padding:8px;border:1px solid var(--bd);border-radius:12px;background:#fff;font:inherit;font-size:13px}
+.grid{max-width:1000px;margin:0 auto;padding:8px 16px 120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px 14px}
+.msg{grid-column:1/-1;text-align:center;color:var(--mu);padding:40px 10px}
+.card{display:flex;flex-direction:column;gap:6px}
+.ph{aspect-ratio:3/4;border-radius:999px 999px 16px 16px;overflow:hidden;background:var(--pink);border:3px solid #fff;box-shadow:0 0 0 1px var(--gold),0 8px 20px #b8892b22;display:grid;place-items:center;font-size:34px;color:#b8892b88;position:relative;cursor:pointer}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}.bg{position:absolute;top:18%;left:50%;transform:translateX(-50%);background:#3a2a31d9;color:#fff;font:700 11px Nunito,sans-serif;padding:4px 10px;border-radius:12px;white-space:nowrap}.bg.of{background:var(--rose)}
+.pn{font-size:15px;margin:4px 2px 0;line-height:1.25;cursor:pointer}.ds{font-size:12px;color:var(--mu);margin:0 2px}
+.pr{font-weight:700;color:var(--rose);margin:0 2px}.pr s{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
+select,.card button,.sheet input,.sheet textarea{font:inherit}.card select{padding:7px;border:1px solid var(--bd);border-radius:10px;background:#fff;font-size:13px}
+.add{border:0;background:var(--rose);color:#fff;padding:10px;border-radius:12px;font-weight:700;cursor:pointer}.add[disabled]{background:#cdb9c1;cursor:default}
+.bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;border:0;background:var(--rose);color:#fff;padding:14px 22px;border-radius:30px;font:inherit;font-weight:700;box-shadow:0 10px 26px #3a2a3144;cursor:pointer;white-space:nowrap}
+.ov{position:fixed;inset:0;background:#3a2a3188;z-index:30;display:flex;align-items:flex-end;justify-content:center}.ov[hidden],#zm[hidden],#tt[hidden]{display:none}
+.sheet{background:#fff;width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));animation:up .25s}
+@keyframes up{from{transform:translateY(40px);opacity:0}}@media(prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet h2{margin:0 0 8px;font-size:22px}.fi img{width:100%;max-height:340px;object-fit:cover;border-radius:18px;cursor:zoom-in}.fi .ph{aspect-ratio:4/3;border-radius:18px}
+.mt{font-size:13px;color:var(--mu);margin:2px 0}.it{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.it img,.it .th{width:54px;height:54px;border-radius:12px;object-fit:cover;background:var(--pink);flex:none}.it .t{flex:1;font-size:14px}.it small{color:var(--mu)}
+.q{display:flex;align-items:center;gap:6px}.q button{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:#fff;cursor:pointer}
+.tot{display:flex;justify-content:space-between;font-size:18px;font-weight:700;padding:12px 0}
+.sheet label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px}.sheet input,.sheet textarea,.sheet select{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:12px;font:inherit;background:#fff}
+.inv{border-color:#d93f4f!important}.to{display:flex;gap:10px;flex-wrap:wrap}.to label{display:flex;gap:6px;align-items:center;margin:0;font-size:13px;color:var(--ink)}.to input{width:auto}
+.wa{width:100%;margin-top:14px;border:0;background:#1f9d63;color:#fff;padding:14px;border-radius:14px;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.lk{background:none;border:0;color:var(--mu);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;margin-top:8px}
+#zm{position:fixed;inset:0;background:#000d;z-index:40;display:grid;place-items:center;cursor:zoom-out}#zm img{max-width:96vw;max-height:92vh;border-radius:12px}
+#tt{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:#3a2a31;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:50}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:0 16px 110px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+</style></head><body data-l="bebes">
+<header class="hero"><img class="logo" src="icon-512.png" alt="De Sofi’s Boutique, logo" width="150" height="150"><h1 id="bn" hidden></h1><p class="tag" id="bs">Todo lo que tu bebé necesita, en un solo lugar.</p><details class="inf" id="inf" hidden><summary>Horarios, entregas y contacto</summary><div id="infb"></div></details><div class="dv"><span aria-hidden="true">🐝</span></div></header>
+<nav class="lines"><button data-l="bebes" class="on" onclick="setL('bebes')">🍼 Bebés</button><button data-l="boutique" onclick="setL('boutique')">👗 Boutique</button><button data-l="perfumes" onclick="setL('perfumes')">🌸 Perfumes</button></nav>
+<div class="tools"><input id="q" type="search" placeholder="Buscar por nombre…" aria-label="Buscar" oninput="Q=this.value;draw()"><div id="cats" class="chips"></div><div id="flt" class="flt"></div></div>
+<main id="grid" class="grid"><p class="msg">Cargando catálogo…</p></main>
+<footer>Los precios y la disponibilidad pueden cambiar. Tu pedido queda pendiente hasta que te lo confirmemos por WhatsApp. 🐝</footer>
+<button id="bar" class="bar" hidden onclick="openS()"></button>
+<div id="ov" class="ov" hidden onclick="if(event.target==this)closeS()"><div class="sheet" id="sh" role="dialog" aria-label="Detalle"></div></div>
+<div id="zm" hidden onclick="this.hidden=true"><img alt=""></div><div id="tt" hidden></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const FB={apiKey:"AIzaSyCpimz_TW1t2BzNnMZOugHEnkGUf5UixSM",authDomain:"sofis-boutique-f1776.firebaseapp.com",projectId:"sofis-boutique-f1776",storageBucket:"sofis-boutique-f1776.firebasestorage.app",messagingSenderId:"1084618169373",appId:"1:1084618169373:web:3d651d1bfcc9c50c3a7af4"};
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const M=n=>'C$ '+(+n||0).toLocaleString('es-NI',{maximumFractionDigits:2}),GEN={nina:'Niña',nino:'Niño',dama:'Dama',caballero:'Caballero',unisex:'Unisex'};
+let P=[],CF={},L='bebes',cat='Todo',Q='',fg='',fz='',fc='',so='',cart={};try{cart=JSON.parse(localStorage.getItem('sofy_cart')||'{}')}catch(e){}
+const sv=()=>{try{localStorage.setItem('sofy_cart',JSON.stringify(cart))}catch(e){}};
+const NM=()=>CF.nombre||'Sofy Store',SZ=p=>(p.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);
+const WA=()=>(CF.wa||'').split('\n').map(l=>{const[a,b]=l.split(',');return b?{n:a.trim(),t:b.replace(/\D/g,'')}:null}).filter(Boolean);
+function tt(m){const e=$('#tt');e.textContent=m;e.hidden=false;clearTimeout(tt.i);tt.i=setTimeout(()=>e.hidden=true,2200)}
+let db;try{firebase.initializeApp(FB);db=firebase.firestore();
+ db.doc('config/store').get().then(s=>{if(s.exists){CF=s.data();info()}}).catch(()=>{});
+ db.collection('catalog').get().then(s=>{P=s.docs.map(d=>({...d.data(),id:d.id}));for(const k in cart)if(!P.find(p=>p.id==cart[k].id))delete cart[k];sv();draw()}).catch(()=>{$('#grid').innerHTML='<p class="msg">No pudimos cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.</p>'})}
+catch(e){$('#grid').innerHTML='<p class="msg">No pudimos cargar el catálogo. Revisa tu conexión.</p>'}
+function info(){$('#bn').textContent=CF.nombre||'';$('#bn').hidden=!CF.nombre;document.title=NM()+' · Catálogo';setL(L,1);const w=WA()[0],t=[CF.horario&&'<p><b>Horario:</b>\n'+esc(CF.horario)+'</p>',CF.entregas&&'<p><b>Entregas y retiros:</b>\n'+esc(CF.entregas)+'</p>',w&&`<p><a href="https://wa.me/${w.t}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></p>`].filter(Boolean).join('');$('#infb').innerHTML=t;$('#inf').hidden=!t}
+function setL(l,k){L=l;if(!k){cat='Todo';fg=fz=fc=so=''}document.body.dataset.l=l;document.querySelectorAll('.lines button').forEach(b=>b.classList.toggle('on',b.dataset.l==l));
+ $('#bs').textContent=l=='bebes'?(CF.eslogan||'Todo lo que tu bebé necesita, en un solo lugar.'):l=='boutique'?'Línea Boutique De Sofi’s · Vestidos para boda, comunión, confirmación y quinceaños · Moda infantil y accesorios':'Perfumes para dama y caballero';draw()}
+const badge=p=>!p.av?['Agotado','']:p.low?['Pocas unidades','']:p.old>p.price?['Oferta','of']:p.cond=='seminuevo'?['Seminuevo','']:['',''];
+const prc=p=>M(p.price)+(p.old>p.price?`<s>${M(p.old)}</s>`:'');
+function draw(){
+ const base=P.filter(p=>(p.linea||'bebes')==L),cs=['Todo','✨ Nuevos','🏷️ Ofertas',...new Set(base.map(p=>p.cat).filter(Boolean))],q=Q.toLowerCase().trim();
+ $('#cats').innerHTML=cs.map(c=>`<button class="${c==cat?'on':''}" onclick="cat=this.dataset.c;draw()" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+ const zs=[...new Set(base.flatMap(SZ))],o=(v,a,t)=>`<option value="${esc(v)}" ${a==v?'selected':''}>${esc(t)}</option>`;
+ $('#flt').innerHTML=(L=='bebes'?`<select aria-label="Género" onchange="fg=this.value;draw()">${o('',fg,'Niño o niña')}${o('nina',fg,'Niña')}${o('nino',fg,'Niño')}${o('unisex',fg,'Unisex')}</select>`:L=='perfumes'?`<select aria-label="Para" onchange="fg=this.value;draw()">${o('',fg,'Dama y caballero')}${o('dama',fg,'Dama')}${o('caballero',fg,'Caballero')}${o('unisex',fg,'Unisex')}</select>`:'')+(zs.length?`<select aria-label="Talla" onchange="fz=this.value;draw()">${o('',fz,L=='perfumes'?'Todas las presentaciones':'Todas las tallas')}${zs.map(z=>o(z,fz,z)).join('')}</select>`:'')+(L=='bebes'?`<select aria-label="Condición" onchange="fc=this.value;draw()">${o('',fc,'Nuevo y seminuevo')}${o('nuevo',fc,'Nuevo')}${o('seminuevo',fc,'Seminuevo')}</select>`:'')+`<select aria-label="Ordenar" onchange="so=this.value;draw()">${o('',so,'Ordenar')}${o('a',so,'Precio: menor a mayor')}${o('d',so,'Precio: mayor a menor')}</select>`;
+ let l=base.filter(p=>(!fg||p.gen==fg)&&(!fz||SZ(p).includes(fz))&&(!fc||p.cond==fc)&&(!q||(p.name+' '+p.desc+' '+p.cat).toLowerCase().includes(q)));
+ if(cat=='🏷️ Ofertas')l=l.filter(p=>p.old>p.price);else if(cat=='✨ Nuevos')l=[...l].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);else if(cat!='Todo')l=l.filter(p=>p.cat==cat);
+ if(so)l=[...l].sort((a,b)=>so=='a'?a.price-b.price:b.price-a.price);else if(cat!='✨ Nuevos')l=[...l].sort((a,b)=>(b.av-a.av)||a.name.localeCompare(b.name));
+ $('#grid').innerHTML=l.map(p=>{const z=SZ(p),[bt,bc]=badge(p);return `<article class="card"><div class="ph" onclick="ficha('${p.id}')">${p.img?`<img src="${p.img}" alt="${esc(p.name)}" loading="lazy">`:'✿'}${bt?`<span class="bg ${bc}">${bt}</span>`:''}</div><h2 class="pn" onclick="ficha('${p.id}')">${esc(p.name)}</h2><p class="pr">${prc(p)}</p>${z.length?`<select id="z${p.id}" aria-label="Talla"><option value="">Elige ${p.linea=='perfumes'?'la presentación':'la talla'}</option>${z.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`:''}<button class="add" ${p.av?'':'disabled'} onclick="add('${p.id}',${z.length})">${p.av?'Agregar a mi lista':'No disponible'}</button></article>`}).join('')||`<p class="msg">${P.length?'No encontramos productos con esos filtros.':'Pronto verás aquí nuestros productos. 🐝'}</p>`;
+ bar()}
+function ficha(id){const p=P.find(x=>x.id==id);if(!p)return;const z=SZ(p);
+ $('#sh').innerHTML=`<div class="fi">${p.img?`<img src="${p.img}" alt="${esc(p.name)}" onclick="zoom('${id}')">`:'<div class="ph">✿</div>'}</div><h2 style="margin-top:12px">${esc(p.name)}</h2><p class="pr" style="font-size:20px">${prc(p)}</p>${p.desc?`<p>${esc(p.desc)}</p>`:''}
+ ${p.code?`<p class="mt">Código: ${esc(p.code)}</p>`:''}${p.cat?`<p class="mt">Categoría: ${esc(p.cat)}</p>`:''}${GEN[p.gen]?`<p class="mt">Para: ${GEN[p.gen]}</p>`:''}${p.cond?`<p class="mt">Condición: ${p.cond=='nuevo'?'Nuevo':'Seminuevo'}</p>`:''}<p class="mt">${p.av?(p.low?'Pocas unidades disponibles':'Disponible'):'Agotado'}</p>
+ ${z.length?`<label>${p.linea=='perfumes'?'Presentación':'Talla'}</label><select id="zf"><option value="">Elige ${p.linea=='perfumes'?'la presentación':'la talla'}</option>${z.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`:''}
+ <button class="wa" style="background:var(--rose)" ${p.av?'':'disabled'} onclick="add('${id}',${z.length},'zf')&&closeS()">${p.av?'Agregar a mi lista':'No disponible'}</button><button class="lk" onclick="closeS()">Cerrar</button>`;$('#ov').hidden=false}
+function zoom(id){const p=P.find(x=>x.id==id);$('#zm img').src=p.img;$('#zm').hidden=false}
+function add(id,hz,sid){const e=$('#'+(sid||'z'+id)),sz=e?e.value:'';if(hz&&!sz){e.classList.add('inv');e.focus();tt('Elige la talla primero');return false}const k=id+'|'+sz;cart[k]=cart[k]||{id,sz,q:0};cart[k].q++;sv();bar();tt('Agregado a tu lista ✓');return true}
+const items=()=>Object.entries(cart).map(([k,c])=>({k,...c,p:P.find(p=>p.id==c.id)})).filter(i=>i.p),tot=l=>l.reduce((a,i)=>a+i.q*i.p.price,0);
+function bar(){const l=items(),n=l.reduce((a,i)=>a+i.q,0),b=$('#bar');b.hidden=!n;b.textContent=`🐝 Mi lista · ${n} · ${M(tot(l))}`}
+function chg(k,d){cart[k].q+=d;if(cart[k].q<1)delete cart[k];sv();bar();items().length?sheet():closeS()}
+function openS(){$('#ov').hidden=false;sheet()}function closeS(){$('#ov').hidden=true}
+function dlv(){const e=document.querySelector('input[name=md]:checked');$('#dd').hidden=!e||e.value!='Entrega a domicilio'}
+function sheet(){const l=items(),w=WA(),rr=w.length?(+localStorage.sofy_rr||0)%w.length:0;
+ $('#sh').innerHTML=`<h2>Mi lista</h2>${l.map(i=>`<div class="it">${i.p.img?`<img src="${i.p.img}" alt="">`:'<div class="th"></div>'}<div class="t">${esc(i.p.name)}<br><small>${i.sz?(i.p.linea=='perfumes'?'':'Talla ')+esc(i.sz)+' · ':''}${M(i.p.price)}</small></div><div class="q"><button onclick="chg('${i.k}',-1)" aria-label="Quitar uno">−</button><b>${i.q}</b><button onclick="chg('${i.k}',1)" aria-label="Agregar uno">+</button></div></div>`).join('')}
+ <div class="tot"><span>Total</span><span>${M(tot(l))}</span></div>
+ <label>Tu nombre</label><input id="cn" autocomplete="name"><label>Número de contacto</label><input id="ct" type="tel" inputmode="tel" autocomplete="tel">
+ <label>¿Cómo lo recibes?</label><div class="to"><label><input type="radio" name="md" value="Entrega a domicilio" checked onchange="dlv()">Entrega</label><label><input type="radio" name="md" value="Retiro en tienda" onchange="dlv()">Retiro</label></div>
+ <div id="dd"><label>Ciudad o sector</label><input id="cs"><label>Dirección</label><input id="cd"></div>
+ <label>Observaciones</label><textarea id="cm" rows="2" placeholder="Colores, dudas, fecha en que lo necesitas…"></textarea>
+ ${w.length>1?`<label>Enviar a</label><div class="to">${w.map((a,i)=>`<label><input type="radio" name="ad" value="${i}" ${i==rr?'checked':''}>${esc(a.n)}</label>`).join('')}</div>`:''}
+ <button class="wa" onclick="send()">Enviar mi pedido por WhatsApp</button><button class="lk" onclick="if(confirm('¿Vaciar tu lista?')){cart={};sv();bar();closeS()}">Vaciar lista</button> <button class="lk" onclick="closeS()">Seguir viendo</button>`}
+async function send(){const req=(id,m)=>{const e=$('#'+id);e.classList.add('inv');e.focus();tt(m);e.addEventListener('input',()=>e.classList.remove('inv'),{once:true});return 1};
+ const n=$('#cn').value.trim(),t=$('#ct').value.trim(),md=document.querySelector('input[name=md]:checked').value,en=md=='Entrega a domicilio',cs=$('#cs').value.trim(),cd=$('#cd').value.trim();
+ if(!n)return req('cn','Escribe tu nombre');if(t.replace(/\D/g,'').length<8)return req('ct','Escribe un número de contacto válido');if(en&&!cs)return req('cs','Indica tu ciudad o sector');if(en&&!cd)return req('cd','Escribe tu dirección');
+ const w=WA(),sel=document.querySelector('input[name=ad]:checked'),i=sel?+sel.value:0,a=w[i];if(!a||!/^\d{8,15}$/.test(a.t))return tt('Falta configurar el WhatsApp de la tienda');
+ const l=items(),T=tot(l),c=$('#cm').value.trim(),dir=[cs,cd].filter(Boolean).join(' · ');
+ const m=`Hola, ${NM()}. Quiero realizar el siguiente pedido:\n\n`+l.map(x=>`Producto: ${x.p.name}.\n${x.p.code?'Código: '+x.p.code+'.\n':''}${x.sz?(x.p.linea=='perfumes'?'Presentación: ':'Talla: ')+x.sz+'.\n':''}Cantidad: ${x.q}.\nPrecio: ${M(x.p.price)}.`).join('\n\n')+`\n\nTotal del pedido: ${M(T)}.\n\nCliente: ${n}.\nTeléfono: ${t}.\nEntrega: ${md}.${en?'\nDirección: '+dir+'.':''}${c?'\nObservaciones: '+c+'.':''}`;
+ const b=document.querySelector('.wa');b.disabled=true;b.textContent='Enviando…';
+ const o={nombre:n,tel:t,modo:md,dir:en?dir:'',nota:c,items:l.map(x=>({id:x.id,name:x.p.name,code:x.p.code||'',sz:x.sz,q:x.q,price:x.p.price})),total:T,estado:'pendiente',fecha:Date.now(),linea:L};
+ try{await Promise.race([db.collection('orders').add(o),new Promise(r=>setTimeout(r,2500))])}catch(e){}
+ try{localStorage.sofy_rr=(i+1)%w.length}catch(e){}
+ location.href='https://wa.me/'+a.t+'?text='+encodeURIComponent(m)}
+</script></body></html>
