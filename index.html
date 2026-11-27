@@ -257,7 +257,7 @@ const FB={apiKey:"AIzaSyCpimz_TW1t2BzNnMZOugHEnkGUf5UixSM",authDomain:"sofis-bou
 let PIMG=null;const CS={};
 function pimg(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);PIMG=c.toDataURL('image/jpeg',.72);const e=$('#pim');e.src=PIMG;e.style.display='block'};im.src=r.result};r.readAsDataURL(f)}
 /*ER-START*/
-const LN={bebes:'Bebés',quince:'Quinceañeras',bautizo:'Bautizos',dama:'Ropa para dama',perf_cab:'Perfume caballero',perf_dam:'Perfume dama',boutique:'Boutique (sin clasificar)',perfumes:'Perfumes (sin clasificar)'};
+const LN={bebes:'Bebés',quince:'Quinceañeras',bautizo:'Bautizos',comunion:'Comunión',confirmacion:'Confirmación',casamiento:'Casamientos',dama:'Ropa para dama',perf_cab:'Perfume caballero',perf_dam:'Perfume dama',boutique:'Boutique (sin clasificar)',perfumes:'Perfumes (sin clasificar)'};
 function pe(p,t){t=t||day();if(!p.pm||!(p.pv>0)||(p.pi&&t<p.pi)||(p.pf&&t>p.pf))return p.price;const v=p.pt=='fijo'?p.price-p.pv:p.price*(1-p.pv/100);return Math.max(0,Math.round(v*100)/100)}
 function calc(p,q,pr,dt,dv){const list=Math.max(p.price,pr),base=pr*q;let d2=dt=='pct'?base*dv/100:dv;d2=Math.min(Math.max(d2||0,0),base);const tot=Math.round((base-d2)*100)/100;return{list,tot,disc:Math.round((list*q-tot)*100)/100,g:Math.round((tot-p.cost*q)*100)/100}}
 const dd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)},fd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
